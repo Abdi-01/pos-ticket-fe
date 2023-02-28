@@ -7,7 +7,7 @@ export const checkEmail = (email) => {
     }
 };
 
-export const API_URL = ""; // API kita
+export const API_URL = "http://localhost:5000"; // API kita
 
 
 //biar ga panjang di yang register
