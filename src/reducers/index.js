@@ -4,7 +4,7 @@ import  authReducer  from "./users";
 
 const globalStore = configureStore ({
     reducer: {
-        authReducer
+        auth: authReducer
     }
 })
 

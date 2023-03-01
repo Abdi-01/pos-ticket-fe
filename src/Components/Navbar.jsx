@@ -8,7 +8,7 @@ import { logoutAction } from "../reducers/users";
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  const  users  = useSelector((state) => state.auth);
 
   const logoutBtn = () => {
     dispatch(logoutAction());
