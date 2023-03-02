@@ -11,7 +11,7 @@ function Sidenavbar() {
   return (
     <div>
       
-        <div className='h-screen bg-gray-600 px-2 z-10'>
+        <div className='h-full bg-gray-600 px-2 z-10'>
             <h1 className='font-bold text-xl pb-2'>General</h1>
             <div className='flex flex-col gap-y-4 text-orange-400 '>
             <button className='flex gap-2 pl-4 hover:text-white'>
