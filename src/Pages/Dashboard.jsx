@@ -1,155 +1,162 @@
 import React from 'react';
-import Sidenavbar from '../Components/Sidenavbar';
-import Navbar from '../Components/Navbar'
-import { BsCart4 } from 'react-icons/bs'
-import  {usePagination, DOTS} from './usePa'
+import { Flex, Button, Box, Menu, MenuButton, MenuItem, MenuList, IconButton, Text, ButtonGroup, SimpleGrid } from '@chakra-ui/react';
+import axios from 'axios';
+import Products from '../Components/Products';
+import { FiFilter } from 'react-icons/fi';
+import Pagination from '../Components/Pagination';
 
-function LandingPage() {
+function LandingPage(props) {
+const [showProducts, setShowProducts] = React.useState([]);
+    const [page, setPage] = React.useState(0);
+    const [size, setSize] = React.useState(6);
+    const [productName, setProductName] = React.useState("");
+    const [totalData, setTotalData] = React.useState(0);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [sortby, setSortby] = React.useState("name");
+    const [order, setOrder] = React.useState("ASC");
 
-    return (
-        <div>
-            <Navbar />
-            <div className='flex'>
-                <Sidenavbar />
-                <div className='border-4 border-blue-400 w-full py-4'>
-                    <div>
-                        <div className='flex justify-between px-4'>
-                            <div className='flex gap-6'>
-                                <h1>Sort by</h1>
-                                <div class="box">
-                                    <select className='border '>
-                                        <option>Feature</option>
-                                        <option>Best Selling</option>
-                                        <option>Alphabetically, A-Z</option>
-                                        <option>Alphabetically, Z-A</option>
-                                        <option>Category, Tickets </option>
-                                        <option>Category, Merchandise </option>
-                                        <option>Price, Low to High </option>
-                                        <option>Price, High to Low </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='flex flex-wrap gap-16 justify-evenly p-4'>
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://img.freepik.com/free-vector/live-concert-ticket_53876-67419.jpg" alt="" />
-                            <h1 className='font-semibold text-center'>Platinum Ticket</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$200</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
+    const getAllProducts = async () => {
+      try {
+        let token = localStorage.getItem("petshop_login");
+        let response = await axios.post(`http://localhost:5000/product/list?page=${page}&size=${size}&name=${productName}&sortby=${sortby}&order=${order}`, {}, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        console.log("ini response.data dari getAllProducts :", response.data);
+        console.log("ini ambil total data dari getAllProducts :", response.data.datanum);
+        setTotalData(response.data.datanum);
+        setShowProducts(response.data.data);
+      } catch (error) {
+        console.log("dari getAllProducts :", error);
+      }
+    };
 
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://media.istockphoto.com/id/1322690989/vector/vector-illustration-concert-ticket-template-concert-party-or-festival-ticket-design-template.jpg?s=612x612&w=0&k=20&c=YIwOtmLIGK4NTMeaKrqpQdoxjDzM1C4L5SQb8cQP_kU=" alt="" />
-                            <h1 className='font-semibold text-center'>VVIP Ticket</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$180</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
+    // Jalani fungsi getAllProducts
+    React.useEffect(() => {
+      getAllProducts();
+    }, [page, sortby, order]);
 
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://img.freepik.com/free-psd/ticket-template-summer-festival_23-2148174538.jpg" alt="" />
-                            <h1 className='font-semibold text-center'>VIP Ticket</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$150</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
+    // Print list of products
+    const printAllProducts = () => {
+      console.log("ini isi showproducts :", showProducts);
+      let print = showProducts.map((val, idx) => {
+        console.log("ini val :", val);
+        return <Products name={val.name} productimage={val.image} price={val.price} />
+      });
+      return print;
+    }
 
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://t4.ftcdn.net/jpg/05/66/97/63/360_F_566976397_ODQcuTnWzIa4NLVWmuiQlb09Nm8deMk6.jpg" alt="" />
-                            <h1 className='font-semibold text-center'>Regular Ticket</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$100</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
+    // Change page
+    const paginate = pageNumber => {
+      setPage(pageNumber);
+    }
 
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://di2ponv0v5otw.cloudfront.net/posts/2019/09/12/5d7acd1750177fd63096f2e6/m_5d7acd1b111006a7cfa09937.jpeg" alt="" />
-                            <h1 className='font-semibold text-center'>Book</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$100</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
+  return (
+    <>
+          {/* The PRODUCT */}
+        <Flex
+            minH={'100vh'}
+            align={'center'}
+            justify={'center'}
+            bg={'white'}
+        >
+            {/*  CONTENT LEFT */}
+            <Box flex={{ base: 'none', lg: '1' }}>
+            </Box>
+            {/* MIDDLE  */}
+            <Box paddingTop='4' pb='8'
+                flex='4'
+            >
+                <Text fontSize='4xl' fontWeight='bold' color='white' p={{ base: '8', lg: '4' }}>
+                    
+                    <Text fontSize='4xl' fontWeight='bold' color='#c27c3a' pb={{ base: '-10', lg: '10' }} pt='-5'>Welcome to Tunes Up Festival</Text>
+                </Text>
+                <Flex p={{ base: '4', lg: '2' }} >
+                    <Menu>
+                        <MenuButton
+                            as={IconButton}
+                            aria-label='Options'
+                            icon={<FiFilter />}
+                            variant='outline'
+                            color='#c27c3a'
+                            _expanded={{ bg: 'white', color:'#c27c3a' }}
+                        />
+                        <MenuList>
+                            <MenuItem onClick={() => {
+                                setSortby("name")
+                                setOrder("ASC") 
+                            }}>
+                                Sort by product name A-Z
+                            </MenuItem>
+                            <MenuItem onClick={() => {
+                                setSortby("name")
+                                setOrder("DESC")
+                            }}>
+                                Sort by product name Z-A
+                            </MenuItem>
+                            <MenuItem onClick={() => {
+                                setSortby("price")
+                                setOrder("ASC")
+                            }}>
+                                Sort by product price low-high
+                            </MenuItem>
+                            <MenuItem onClick={() => {
+                                setSortby("price")
+                                setOrder("DESC")
+                            }}>
+                                Sort by product name high-low
+                            </MenuItem>
+                        </MenuList>
+                    </Menu>
+                </Flex>
+                <Flex pb='5' pl={{ base: '3', lg: '2' }}>
+                    <ButtonGroup>
+                        <Button bgColor={"#c27c3a"} color='white' 
+                         _hover={{ bg: '#c27c3a' }}
+                         _active={{
+                           bg: 'white',
+                           transform: 'scale(0.98)',
+                         }}
+                     >
+                            All
+                        </Button>
+                        <Button bgColor={"#c27c3a"} color='white'
+                        _hover={{ bg: '#c27c3a' }}
+                        _active={{
+                          bg: 'white',
+                          transform: 'scale(0.98)',
+                        }}
+                        >
+                            Tickets
+                        </Button>
+                        <Button bgColor={"#c27c3a"} color='white'
+                        _hover={{ bg: '#c27c3a' }}
+                        _active={{
+                          bg: 'white',
+                          transform: 'scale(0.98)',
+                        }}
+                        >
+                           Merchandise
+                        </Button>
+                    </ButtonGroup>
+                </Flex>
+                <Flex minHeight="100vh" maxW='8xs' flexWrap='wrap' justifyContent='space-evenly' alignItem='start'>
+                  <SimpleGrid columns={[1, 2, 3]} spacing={8} padding>
+                    {printAllProducts()}
+                  </SimpleGrid>
+                    <Flex my='10' w='full' justify={'center'}>
+                        <Pagination size={size} page={page} totalData={totalData} paginate={paginate} />
+                    </Flex>
+                </Flex>
 
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://waroengsteakandshake.com/uploads/2021/08/20/WhatsApp_Image_2021-08-20_at_10.13.18.jpeg" alt="" />
-                            <h1 className='font-semibold text-center'>Tumbler</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$100</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
-
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR5g6UmrPDY1bjG83I2vE8ZMtkElzq6YuhjMWhgPlINQuySBW1Ex9RecVtgBNQIKAhRA8&usqp=CAU" alt="" />
-                            <h1 className='font-semibold text-center'>Mug</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$100</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
-
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://ih1.redbubble.net/image.2397026236.1675/poster,504x498,f8f8f8-pad,600x600,f8f8f8.jpg" alt="" />
-                            <h1 className='font-semibold text-center'>Poster</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$100</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
-
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://ih1.redbubble.net/image.2397026236.1675/poster,504x498,f8f8f8-pad,600x600,f8f8f8.jpg" alt="" />
-                            <h1 className='font-semibold text-center'>Poster</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$100</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
-
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://ih1.redbubble.net/image.2397026236.1675/poster,504x498,f8f8f8-pad,600x600,f8f8f8.jpg" alt="" />
-                            <h1 className='font-semibold text-center'>Poster</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$100</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
-
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://ih1.redbubble.net/image.2397026236.1675/poster,504x498,f8f8f8-pad,600x600,f8f8f8.jpg" alt="" />
-                            <h1 className='font-semibold text-center'>Poster</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$100</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
-
-                        <div className='w-48'>
-                            <img className='w-48 h-48 rounded-2xl' src="https://ih1.redbubble.net/image.2397026236.1675/poster,504x498,f8f8f8-pad,600x600,f8f8f8.jpg" alt="" />
-                            <h1 className='font-semibold text-center'>Poster</h1>
-                            <div className='flex justify-between py-1'>
-                                <h1 className='p-1'>$100</h1>
-                                <button className=' bg-orange-400 p-1 flex gap-1 rounded-xl'> <BsCart4 className='text-xl' />Purchase</button>
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
-                <div></div>
-            </div>
-
-        </div>
-
-
-    );
-}
+            </Box>
+            {/*  CONTENTRIGHT */}
+            <Box flex={{ base: 'none', lg: '1' }}>
+            </Box>
+        </Flex> 
+  </>
+  )
+};
 
 export default LandingPage;
