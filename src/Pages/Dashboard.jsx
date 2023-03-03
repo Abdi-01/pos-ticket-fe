@@ -54,7 +54,7 @@ const [showProducts, setShowProducts] = React.useState([]);
 
   return (
     <>
-          {/* INI PRODUCT */}
+          {/* The PRODUCT */}
         <Flex
             minH={'100vh'}
             align={'center'}
